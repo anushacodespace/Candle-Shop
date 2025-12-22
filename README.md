@@ -1,36 +1,149 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+🕯️ Candle Shop – Next.js E-Commerce App
 
-## Getting Started
+A full-featured e-commerce candle shop application built using Next.js (App Router), Zustand, and Material UI.
+The project focuses on real-world authentication, state management, cart persistence, and checkout flow.
 
-First, run the development server:
+✨ Features
+🔐 Authentication (Mock)
 
-```bash
+Signup & Login
+
+Multi-user support (stored by email)
+
+Persistent login session
+
+Logout functionality
+
+Navbar updates instantly on login/logout
+
+🛒 Cart Management
+
+Add products to cart
+
+Increase / decrease quantity
+
+Remove items
+
+Cart persists per logged-in user
+
+Live cart badge count
+
+💳 Checkout Flow
+
+Shipping address form
+
+Cart summary
+
+Mock payment (no real gateway)
+
+Protected checkout route
+
+🎉 Order Success Page
+
+Order summary snapshot
+
+Shipping details
+
+Correct total amount
+
+Cart cleared safely after order
+
+Auth-protected page
+
+🧠 Key Concepts Implemented
+
+Zustand for global state management
+
+Separate stores for auth and cart
+
+Single source of truth for authentication
+
+Snapshot logic to prevent cart data loss
+
+Clean logout and session handling
+
+Real-world bug fixes (auto-login, stale state, cart clearing)
+
+🛠 Tech Stack
+
+Next.js 14 (App Router)
+
+React
+
+Zustand
+
+Material UI (MUI)
+
+MongoDB (products API)
+
+LocalStorage (mock auth & cart persistence)
+
+📁 Project Structure
+src/
+ ├── app/
+ │   ├── login/
+ │   ├── signup/
+ │   ├── shop/
+ │   ├── cart/
+ │   ├── checkout/
+ │   ├── success/
+ │   └── logout/
+ │
+ ├── components/
+ │   ├── Navbar.jsx
+ │   ├── AuthGuard.jsx
+ │   └── ProductCard.jsx
+ │
+ ├── store/
+ │   ├── authStore.js
+ │   └── cartStore.js
+ │
+ └── api/
+     └── products/
+
+▶️ Running the Project Locally
+1️⃣ Clone the repository
+git clone https://github.com/YOUR_USERNAME/candle-shop-nextjs.git
+cd candle-shop-nextjs
+
+2️⃣ Install dependencies
+npm install
+
+3️⃣ Start development server
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+Open:
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+http://localhost:3000
 
-## Learn More
+🔐 Authentication Notes
 
-To learn more about Next.js, take a look at the following resources:
+Authentication is mocked using localStorage
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Users are stored under users
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Active session stored as sessionUser
 
-## Deploy on Vercel
+Designed to be easily replaced with real backend authentication later
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+⚠️ Disclaimer
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+This project does not handle real payments.
+The payment flow is mocked for learning and demonstration purposes only.
+
+🎯 What This Project Demonstrates
+
+Real-world frontend architecture
+
+Proper auth & session handling
+
+State persistence patterns
+
+Cart & checkout logic
+
+Debugging complex React state issues
+
+👩‍💻 Author
+
+Anusha
