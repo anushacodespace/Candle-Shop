@@ -8,7 +8,7 @@ export default function AuthGuard({ children }) {
   const [checked, setChecked] = useState(false);
 
   useEffect(() => {
-    const user = localStorage.getItem("sessionUser")
+    const user = localStorage.getItem("sessionUser");
 
     if (!user) {
       router.replace("/login");
@@ -17,7 +17,6 @@ export default function AuthGuard({ children }) {
     }
   }, [router]);
 
-  // Prevent rendering until auth check finishes
   if (!checked) return null;
 
   return children;

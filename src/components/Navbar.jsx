@@ -13,8 +13,13 @@ import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import Link from "next/link";
 import { useAuthStore } from "@/store/authStore";
 import { useCartStore } from "@/store/cartStore";
+import useMounted from "@/hooks/useMounted";
 
 export default function Navbar() {
+    const mounted = useMounted();
+    
+  if (!mounted) return null;
+  
   const user = useAuthStore((s) => s.user);
   const cart = useCartStore((s) => s.cart);
 
