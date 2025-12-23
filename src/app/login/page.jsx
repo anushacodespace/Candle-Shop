@@ -1,37 +1,42 @@
+"use client";
+
+import { useRouter } from "next/navigation";  
+import {
+  Box,
+  TextField,
+  Button,
+  Typography,
+  Paper,
+  Divider,
+  Alert,
+  InputAdornment,
+  IconButton,
+  CircularProgress,
+} from "@mui/material";
+import { Visibility, VisibilityOff, Lock } from "@mui/icons-material";
+import { useState, useEffect } from "react";
+import { useCartStore } from "@/store/cartStore";
+import { useAuthStore } from "@/store/authStore";
+
 export default function LoginPage() {
   const router = useRouter();
 
-  // ✅ Zustand hooks MUST be unconditional
+  // ✅ Zustand hooks — ALWAYS unconditional
   const loadCart = useCartStore((s) => s.loadCart);
   const login = useAuthStore((s) => s.login);
   const user = useAuthStore((s) => s.user);
 
-  const [mounted, setMounted] = useState(false);
   const [form, setForm] = useState({ email: "", password: "" });
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
 
-  // ✅ Mount guard (ONE ONLY)
-  useEffect(() => {
-    setMounted(true);
-  }, []);
+  const words = ["Calm", "Warm", "Sacred", "Minimal"];
+  const [activeIndex, setActiveIndex] = useState(0);
 
-  // ✅ Redirect AFTER mount
-  useEffect(() => {
-    if (!mounted) return;
-    if (user) router.replace("/shop");
-  }, [mounted, user, router]);
 
-  if (!mounted) return null;
 
-const handleChange = (e) => {
-    setError("");
-    setForm({ ...form, [e.target.name]: e.target.value });
-  };
- const words = ["Calm", "Warm", "Sacred", "Minimal"];
-const [activeIndex, setActiveIndex] = useState(0);
-
+// Rotate words
 useEffect(() => {
   const interval = setInterval(() => {
     setActiveIndex((prev) => (prev + 1) % words.length);
@@ -40,7 +45,38 @@ useEffect(() => {
   return () => clearInterval(interval);
 }, []);
 
-if (!mounted) return null;
+// Redirect if already logged in
+useEffect(() => {
+  if (user) router.replace("/shop");
+}, [user, router]);
+
+const handleSubmit = (e) => {
+  e.preventDefault();
+  setLoading(true);
+
+  const users =
+    typeof window !== "undefined"
+      ? JSON.parse(localStorage.getItem("users") || "{}")
+      : {};
+
+  const foundUser = users[form.email];
+
+  if (!foundUser || foundUser.password !== form.password) {
+    setError("Invalid email or password");
+    setLoading(false);
+    return;
+  }
+
+  login({ email: foundUser.email, name: foundUser.name });
+  loadCart(foundUser.email);
+  router.push("/shop");
+};
+
+const handleChange = (e) => {
+    setError("");
+    setForm({ ...form, [e.target.name]: e.target.value });
+  };
+
 
 
   return (
