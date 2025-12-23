@@ -1,66 +1,29 @@
-"use client";
-
-import {
-  Box,
-  TextField,
-  Button,
-  Typography,
-  Paper,
-  Divider,
-  Alert,
-  InputAdornment,
-  IconButton,
-} from "@mui/material";
-import { Visibility, VisibilityOff, Lock } from "@mui/icons-material";
-import { useRouter } from "next/navigation";
-import { useState, useEffect } from "react";
-import { useCartStore } from "@/store/cartStore";
-import { useAuthStore } from "@/store/authStore";
-import { CircularProgress } from "@mui/material";
-
-
-
 export default function LoginPage() {
-
   const router = useRouter();
+
+  // ✅ Zustand hooks MUST be unconditional
   const loadCart = useCartStore((s) => s.loadCart);
   const login = useAuthStore((s) => s.login);
   const user = useAuthStore((s) => s.user);
 
+  const [mounted, setMounted] = useState(false);
   const [form, setForm] = useState({ email: "", password: "" });
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
-const [isClient, setIsClient] = useState(false);
 
-useEffect(() => {
-  setIsClient(true);
-}, []);
+  // ✅ Mount guard (ONE ONLY)
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
-if (!isClient) return null;
+  // ✅ Redirect AFTER mount
+  useEffect(() => {
+    if (!mounted) return;
+    if (user) router.replace("/shop");
+  }, [mounted, user, router]);
 
-const handleSubmit = (e) => {
-  e.preventDefault();
-  setLoading(true);
-
-  const users =
-    typeof window !== "undefined"
-      ? JSON.parse(localStorage.getItem("users") || "{}")
-      : {};
-
-  const foundUser = users[form.email];
-
-  if (!foundUser || foundUser.password !== form.password) {
-    setError("Invalid email or password");
-    setLoading(false);
-    return;
-  }
-
-  login({ email: foundUser.email, name: foundUser.name });
-  loadCart(foundUser.email);
-  router.push("/shop");
-};
-
+  if (!mounted) return null;
 
 const handleChange = (e) => {
     setError("");
@@ -77,6 +40,7 @@ useEffect(() => {
   return () => clearInterval(interval);
 }, []);
 
+if (!mounted) return null;
 
 
   return (
