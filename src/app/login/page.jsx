@@ -31,28 +31,23 @@ export default function LoginPage() {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+const [isClient, setIsClient] = useState(false);
 
-  useEffect(() => {
-    if (user) router.replace("/shop");
-  }, [user, router]);
+useEffect(() => {
+  setIsClient(true);
+}, []);
 
-  const handleChange = (e) => {
-    setError("");
-    setForm({ ...form, [e.target.name]: e.target.value });
-  };
+if (!isClient) return null;
 
 const handleSubmit = (e) => {
   e.preventDefault();
   setLoading(true);
 
-  // 🔐 REQUIRED for Vercel / SSR
-  if (typeof window === "undefined") {
-    setError("Something went wrong");
-    setLoading(false);
-    return;
-  }
+  const users =
+    typeof window !== "undefined"
+      ? JSON.parse(localStorage.getItem("users") || "{}")
+      : {};
 
-  const users = JSON.parse(localStorage.getItem("users")) || {};
   const foundUser = users[form.email];
 
   if (!foundUser || foundUser.password !== form.password) {
@@ -67,6 +62,10 @@ const handleSubmit = (e) => {
 };
 
 
+const handleChange = (e) => {
+    setError("");
+    setForm({ ...form, [e.target.name]: e.target.value });
+  };
  const words = ["Calm", "Warm", "Sacred", "Minimal"];
 const [activeIndex, setActiveIndex] = useState(0);
 
