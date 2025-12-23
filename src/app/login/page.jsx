@@ -41,23 +41,31 @@ export default function LoginPage() {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    setLoading(true);
+const handleSubmit = (e) => {
+  e.preventDefault();
+  setLoading(true);
 
-    const users = JSON.parse(localStorage.getItem("users")) || {};
-    const foundUser = users[form.email];
+  // 🔐 REQUIRED for Vercel / SSR
+  if (typeof window === "undefined") {
+    setError("Something went wrong");
+    setLoading(false);
+    return;
+  }
 
-    if (!foundUser || foundUser.password !== form.password) {
-      setError("Invalid email or password");
-      setLoading(false);
-      return;
-    }
+  const users = JSON.parse(localStorage.getItem("users")) || {};
+  const foundUser = users[form.email];
 
-    login({ email: foundUser.email, name: foundUser.name });
-    loadCart(foundUser.email);
-    router.push("/shop");
-  };
+  if (!foundUser || foundUser.password !== form.password) {
+    setError("Invalid email or password");
+    setLoading(false);
+    return;
+  }
+
+  login({ email: foundUser.email, name: foundUser.name });
+  loadCart(foundUser.email);
+  router.push("/shop");
+};
+
 
  const words = ["Calm", "Warm", "Sacred", "Minimal"];
 const [activeIndex, setActiveIndex] = useState(0);
@@ -200,18 +208,31 @@ mb: { xs: 1.5, md: 2 },
 >
   Premium handcrafted candles for your perfect moments.
 </Typography>
-
+<Box
+  sx={{
+    display: { xs: "flex", sm: "none" },
+    justifyContent: "center",
+    gap: 2,
+    mt: 2,
+    fontSize: "0.7rem",
+    opacity: 0.8,
+  }}
+>
+  <span>🔒 Secure</span>
+  <span>🚚 Fast</span>
+  <span>⭐ Trusted</span>
+</Box>
 
 <Typography
   sx={{
+    display: { xs: "none", sm: "block" },
     fontSize: "0.8rem",
     opacity: 0.75,
-    display: { xs: "none", sm: "block" },
+    mt: 1,
   }}
 >
   Secure checkout • Fast delivery • Trusted quality
 </Typography>
-
 
 
 

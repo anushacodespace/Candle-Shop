@@ -23,7 +23,7 @@ export default function Navbar() {
 
   return (
 <AppBar
-  position="static"
+  position="sticky"
   elevation={0}
   sx={{
     background: "linear-gradient(90deg, #a585ef, #9b7fe8)",

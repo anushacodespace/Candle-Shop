@@ -4,62 +4,78 @@ import {
   AppBar,
   Toolbar,
   Typography,
-  IconButton,
-  Badge,
+  Button,
+  Box,
   useMediaQuery,
 } from "@mui/material";
-import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import { useTheme } from "@mui/material/styles";
-import { useCartStore } from "@/store/cartStore";
-import { useSession } from "next-auth/react";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 
 export default function Header() {
-  const { cart, openCart } = useCartStore();
-  const { data: session, status } = useSession();
   const router = useRouter();
+  const pathname = usePathname();
 
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
 
-  const count = cart.reduce((sum, i) => sum + i.quantity, 0);
-
   return (
-   <Box
-  sx={{
-    display: { xs: "none", md: "flex" }, // 👈 HIDE ON MOBILE
-  }}
->
-   <AppBar position="sticky">
-      <Toolbar>
+    <AppBar
+      position="sticky"
+      elevation={0}
+      sx={{
+        background: "linear-gradient(90deg, #7b6cf6, #8a7cf8)",
+        px: { xs: 1, sm: 2 },
+      }}
+    >
+      <Toolbar sx={{ minHeight: { xs: 56, sm: 64 } }}>
+        {/* BRAND */}
         <Typography
           variant={isMobile ? "subtitle1" : "h6"}
-          sx={{ flexGrow: 1, fontWeight: 600, cursor: "pointer" }}
+          sx={{
+            flexGrow: 1,
+            fontWeight: 600,
+            cursor: "pointer",
+            whiteSpace: "nowrap",
+          }}
           onClick={() => router.push("/shop")}
         >
-          Sparrow Light Studio
+          🕯️ Sparrow Light Studio
         </Typography>
 
-        {/* 🛒 Cart icon — only clickable if logged in */}
-        <IconButton
-          color="inherit"
-          size={isMobile ? "large" : "medium"}
-          onClick={() => {
-            if (!session) {
-              router.push("/login");
-            } else {
-              openCart();
-            }
-          }}
-          disabled={status === "loading"}
-        >
-          <Badge badgeContent={session ? count : 0} color="error">
-            <ShoppingCartIcon />
-          </Badge>
-        </IconButton>
+        {/* ACTIONS */}
+        <Box sx={{ display: "flex", gap: 1 }}>
+          {pathname !== "/login" && (
+            <Button
+              color="inherit"
+              size={isMobile ? "small" : "medium"}
+              onClick={() => router.push("/login")}
+              sx={{ textTransform: "none", fontWeight: 500 }}
+            >
+              Login
+            </Button>
+          )}
+
+          {pathname !== "/signup" && (
+            <Button
+              variant="outlined"
+              size={isMobile ? "small" : "medium"}
+              onClick={() => router.push("/signup")}
+              sx={{
+                textTransform: "none",
+                fontWeight: 600,
+                color: "#fff",
+                borderColor: "rgba(255,255,255,0.6)",
+                "&:hover": {
+                  borderColor: "#fff",
+                  backgroundColor: "rgba(255,255,255,0.1)",
+                },
+              }}
+            >
+              Sign up
+            </Button>
+          )}
+        </Box>
       </Toolbar>
     </AppBar>
-</Box>
-
   );
 }

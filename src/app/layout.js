@@ -5,7 +5,7 @@ import MuiProvider from "@/providers/MuiProvider";
 import Navbar from "@/components/Navbar";
 import { useEffect } from "react";
 import { useAuthStore } from "@/store/authStore";
-import MobileHeader from "@/components/MobileHeader";
+import Header from "@/components/Header";
 
 
 export default function RootLayout({ children }) {
