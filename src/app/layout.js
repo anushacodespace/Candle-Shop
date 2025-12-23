@@ -5,6 +5,8 @@ import MuiProvider from "@/providers/MuiProvider";
 import Navbar from "@/components/Navbar";
 import { useEffect } from "react";
 import { useAuthStore } from "@/store/authStore";
+import MobileHeader from "@/components/MobileHeader";
+
 
 export default function RootLayout({ children }) {
   const initAuth = useAuthStore((s) => s.initAuth);

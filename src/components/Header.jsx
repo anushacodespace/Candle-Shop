@@ -25,14 +25,19 @@ export default function Header() {
   const count = cart.reduce((sum, i) => sum + i.quantity, 0);
 
   return (
-    <AppBar position="sticky">
+   <Box
+  sx={{
+    display: { xs: "none", md: "flex" }, // 👈 HIDE ON MOBILE
+  }}
+>
+   <AppBar position="sticky">
       <Toolbar>
         <Typography
           variant={isMobile ? "subtitle1" : "h6"}
           sx={{ flexGrow: 1, fontWeight: 600, cursor: "pointer" }}
           onClick={() => router.push("/shop")}
         >
-          Candle Shop
+          Sparrow Light Studio
         </Typography>
 
         {/* 🛒 Cart icon — only clickable if logged in */}
@@ -54,5 +59,7 @@ export default function Header() {
         </IconButton>
       </Toolbar>
     </AppBar>
+</Box>
+
   );
 }
