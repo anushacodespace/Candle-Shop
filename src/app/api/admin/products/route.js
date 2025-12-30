@@ -1,6 +1,22 @@
 import connectDB from "../../../../lib/mongodb";
 import { ObjectId } from "mongodb";
 
+// GET all products
+export async function GET() {
+  try {
+    const { db } = await connectDB();
+
+    const products = await db
+      .collection("products")
+      .find({})
+      .toArray();
+
+    return Response.json(products);
+  } catch (err) {
+    return Response.json({ error: err.message }, { status: 500 });
+  }
+}
+
 // CREATE product
 export async function POST(req) {
   try {
