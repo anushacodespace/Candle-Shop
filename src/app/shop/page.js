@@ -2,9 +2,10 @@ import ShopClient from "@/components/ShopClient";
 import AuthGuard from "@/components/AuthGuard";
 
 async function getProducts() {
-  const res = await fetch("http://localhost:3000/api/products", {
-    cache: "no-store",
-  });
+ const res = await fetch("/api/products", {
+  cache: "no-store",
+});
+
   return res.json();
 }
 
