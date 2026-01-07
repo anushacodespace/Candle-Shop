@@ -16,9 +16,9 @@ export default async function ShopPage() {
 
   return (
     <main style={{ padding: 24 }}>
-    <AuthGuard>
+    
       <ShopClient products={products} />
-    </AuthGuard>
+    
     </main>
   );
 }

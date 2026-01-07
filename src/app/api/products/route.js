@@ -24,12 +24,26 @@ export async function GET() {
 // optional: allow POST to insert test product from browser/JS
 export async function POST(req) {
   try {
-    const body = await req.json();
-    const { db } = await connectDB();
-    const r = await db.collection("products").insertOne({ ...body, createdAt: new Date() });
-    return new Response(JSON.stringify({ insertedId: r.insertedId }), { status: 201, headers: { "Content-Type": "application/json" } });
+    const { db } = await connectDB();   // <-- connect first
+    let body = await req.json();
+
+    // Always work with an array
+    const products = Array.isArray(body) ? body : [body];
+
+    const r = await db.collection("products").insertMany(products);
+
+    return new Response(
+      JSON.stringify({ inserted: r.insertedCount }),
+      { status: 201, headers: { "Content-Type": "application/json" } }
+    );
+
   } catch (err) {
     console.error("[API POST ERR]", err);
-    return new Response(JSON.stringify({ error: String(err.message || err) }), { status: 500, headers: { "Content-Type": "application/json" } });
+    return new Response(
+      JSON.stringify({ error: err.message }),
+      { status: 500, headers: { "Content-Type": "application/json" } }
+    );
   }
 }
+
+

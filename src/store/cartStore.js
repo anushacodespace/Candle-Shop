@@ -28,25 +28,19 @@ export const useCartStore = create((set, get) => ({
   },
 
   // ➕ Add item
-  addToCart: (product) => {
-    set((state) => {
-      const existing = state.cart.find(
-        (i) => i._id === product._id
-      );
+addToCart: (item) => {
+  const exists = get().cart.find(p => p.id === item.id);
 
-      const updatedCart = existing
-        ? state.cart.map((i) =>
-            i._id === product._id
-              ? { ...i, quantity: i.quantity + 1 }
-              : i
-          )
-        : [...state.cart, { ...product, quantity: 1 }];
+  if (exists) {
+    exists.quantity++;
+    set({ cart: [...get().cart] });
+  } else {
+    set({ cart: [...get().cart, { ...item, quantity: 1 }] });
+  }
 
-      return { cart: updatedCart };
-    });
+  set({ isOpen: true });      // 👈 auto-open cart
+},
 
-    get().saveCart();
-  },
 
   // 🗑 Remove item
   removeFromCart: (id) => {
@@ -87,5 +81,9 @@ decreaseQty: (id) => {
   }));
   get().saveCart();
 },
+isOpen: false,
+
+openCart: () => set({ isOpen: true }),
+closeCart: () => set({ isOpen: false }),
 
 }));

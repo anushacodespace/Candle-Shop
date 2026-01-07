@@ -52,7 +52,7 @@ export default function AdminProducts() {
   }
 
   return (
-    <Container maxWidth="sm" sx={{ py: 4 }}>
+    <Container maxWidth="lg" sx={{ py: 4 }}>
       <Typography variant="h4" gutterBottom>
         Admin – Add Product
       </Typography>

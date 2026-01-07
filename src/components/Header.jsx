@@ -7,16 +7,28 @@ import {
   Button,
   Box,
   useMediaQuery,
+  IconButton,
+  Drawer,
+  List,
+  ListItemButton,
+  ListItemText,
+  Divider,
 } from "@mui/material";
+
+import MenuIcon from "@mui/icons-material/Menu";
+import InstagramIcon from "@mui/icons-material/Instagram";
+
 import { useTheme } from "@mui/material/styles";
 import { useRouter, usePathname } from "next/navigation";
+import { useState } from "react";
 
 export default function Header() {
   const router = useRouter();
   const pathname = usePathname();
-
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
+
+  const [open, setOpen] = useState(false);
 
   return (
     <AppBar
@@ -28,6 +40,29 @@ export default function Header() {
       }}
     >
       <Toolbar sx={{ minHeight: { xs: 56, sm: 64 } }}>
+        {/* MENU BUTTON (always visible) */}
+        <IconButton
+          onClick={() => setOpen(true)}
+          sx={{
+            mr: 2,
+            color: "#fff",
+            display: "flex",
+            alignItems: "center",
+          }}
+        >
+          <MenuIcon />
+          {/* show text only on desktop */}
+          <Typography
+            sx={{
+              ml: 1,
+              fontSize: 14,
+              display: { xs: "none", md: "block" },
+            }}
+          >
+            Menu
+          </Typography>
+        </IconButton>
+
         {/* BRAND */}
         <Typography
           variant={isMobile ? "subtitle1" : "h6"}
@@ -75,6 +110,54 @@ export default function Header() {
             </Button>
           )}
         </Box>
+
+        {/* DRAWER */}
+        <Drawer anchor="left" open={open} onClose={() => setOpen(false)}>
+          <Box
+            sx={{
+              width: 280,
+              height: "100%",
+              display: "flex",
+              flexDirection: "column",
+            }}
+          >
+            {/* TOP MENU */}
+            <List>
+              <ListItemButton onClick={() => router.push("/shop")}>
+                <ListItemText primary="All Products" />
+              </ListItemButton>
+
+              <ListItemButton onClick={() => router.push("/collections")}>
+                <ListItemText primary="Collections" />
+              </ListItemButton>
+
+              <ListItemButton onClick={() => router.push("/about")}>
+                <ListItemText primary="About Us" />
+              </ListItemButton>
+            </List>
+
+            <Divider sx={{ my: 1 }} />
+
+            {/* FOOTER SECTION */}
+            <Box sx={{ mt: "auto", p: 2 }}>
+              <Divider sx={{ mb: 1 }} />
+
+              <ListItemButton onClick={() => router.push("/login")}>
+                <ListItemText primary="Log in" />
+              </ListItemButton>
+
+              <Box sx={{ display: "flex", gap: 2, mt: 1 }}>
+                <IconButton
+                  onClick={() =>
+                    window.open("https://instagram.com", "_blank")
+                  }
+                >
+                  <InstagramIcon />
+                </IconButton>
+              </Box>
+            </Box>
+          </Box>
+        </Drawer>
       </Toolbar>
     </AppBar>
   );

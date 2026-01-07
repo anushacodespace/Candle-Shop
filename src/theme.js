@@ -1,6 +1,9 @@
 import { createTheme } from "@mui/material/styles";
 
 const theme = createTheme({
+  shape: {
+    borderRadius: 0,
+  },
   typography: {
     fontFamily: `"Inter", "Poppins", "Roboto", sans-serif`,
     h6: {
@@ -19,6 +22,16 @@ const theme = createTheme({
     background: {
       default: "#f7f6fb",
     },
+    components: {
+  MuiPaper: {
+    styleOverrides: {
+      root: {
+        borderRadius: 0,
+      },
+    },
+  },
+}
+
   },
 });
 

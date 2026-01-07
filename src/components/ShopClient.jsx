@@ -1,18 +1,27 @@
 "use client";
-import Container from "@mui/material/Container";
+import { Box, Container } from "@mui/material";
 import Grid from "@mui/material/Grid";
 import ProductCard from "./ProductCard";
 
 export default function ShopClient({ products }) {
   return (
-    <Container maxWidth="lg" sx={{ py: 4 }}>
-      <Grid container spacing={4}>
-        {products.map(p => (
-          <Grid item xs={12} sm={6} md={4} key={p._id}>
-            <ProductCard product={p} />
-          </Grid>
-        ))}
-      </Grid>
-    </Container>
+   <Container maxWidth="lg" sx={{ py: 4 }}>
+  <Box
+    sx={{
+      display: "grid",
+      gridTemplateColumns: {
+        xs: "1fr 1fr",
+        sm: "1fr 1fr",
+        md: "repeat(4, 1fr)",
+      },
+      gap: 3,
+    }}
+  >
+    {products?.map((p) => (
+      <ProductCard key={p._id} product={p} />
+    ))}
+  </Box>
+</Container>
+
   );
 }

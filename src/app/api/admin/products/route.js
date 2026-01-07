@@ -23,15 +23,21 @@ export async function POST(req) {
     const body = await req.json();
     const { db } = await connectDB();
 
-    body.createdAt = new Date();
+    if (Array.isArray(body)) {
+      // Insert multiple
+      const r = await db.collection("products").insertMany(body);
+      return new Response(JSON.stringify({ inserted: r.insertedCount }), { status: 201 });
+    }
 
-    const result = await db.collection("products").insertOne(body);
+    // Insert single
+    const r = await db.collection("products").insertOne(body);
+    return new Response(JSON.stringify({ insertedId: r.insertedId }), { status: 201 });
 
-    return Response.json({ success: true, id: result.insertedId });
   } catch (err) {
-    return Response.json({ error: err.message }, { status: 500 });
+    return new Response(JSON.stringify({ error: err.message }), { status: 500 });
   }
 }
+
 
 // UPDATE product
 export async function PUT(req) {

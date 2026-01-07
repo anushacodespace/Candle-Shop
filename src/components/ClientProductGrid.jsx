@@ -31,7 +31,7 @@ export default function ClientProductGrid({ products }) {
       <Grid container spacing={3}>
         {products && products.length ? (
           products.map((p) => (
-            <Grid item key={p._id} xs={12} sm={6} md={4}>
+            <Grid item key={p._id} xs={12} sm={6} md={3}>
               <ProductCard product={p} onAdd={handleAdd} />
             </Grid>
           ))

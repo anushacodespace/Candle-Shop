@@ -5,7 +5,11 @@ import MuiProvider from "@/providers/MuiProvider";
 import Navbar from "@/components/Navbar";
 import { useEffect } from "react";
 import { useAuthStore } from "@/store/authStore";
-import Header from "@/components/Header";
+import Footer from "@/components/Footer";
+import SocialBar from "@/components/SocialBar";
+import PromoPopup from "@/components/PromoPopup";
+import TopSaleBanner from "@/components/TopSaleBanner";
+import "./globals.css";
 
 
 export default function RootLayout({ children }) {
@@ -17,11 +21,15 @@ export default function RootLayout({ children }) {
   
   return (
     <html lang="en">
-      <body suppressHydrationWarning>
+      <body style={{ borderRadius: 0, overflowX: "hidden" }} suppressHydrationWarning>
         <SessionProvider>
           <MuiProvider>
+            <TopSaleBanner />
             <Navbar />
             {children}
+            <SocialBar />
+            <PromoPopup />
+            <Footer />
           </MuiProvider>
         </SessionProvider>
       </body>
