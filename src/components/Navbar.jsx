@@ -136,54 +136,56 @@ const [priceBands, setPriceBands] = useState([]);
           </IconButton>
         </Box>
       </Toolbar>
-
-       {/* MOBILE DRAWER */}
+{/* MOBILE DRAWER */}
 {!isDesktop && (
   <Drawer
     anchor="left"
     open={menuOpen}
     onClose={() => setMenuOpen(false)}
   >
-  <Box sx={{ width: 260, p: 2 }}>
+    <Box sx={{ width: 260, p: 2 }}>
 
-    {/* NAV LINKS FROM ARRAY */}
-    {links.map((link) => (
-      <Typography
-        key={link.path}
-        onClick={() => {
-          router.push(link.path);
-          setMenuOpen(false);
-        }}
-        sx={{
-          py: 1.5,
-          fontSize: 16,
-          cursor: "pointer"
-        }}
-      >
-        {link.label}
-      </Typography>
-    ))}
+      {links.map((link, index) => (
+        <React.Fragment key={link.path}>
+          {/* NORMAL LINK */}
+          <Typography
+            onClick={() => {
+              router.push(link.path);
+              setMenuOpen(false);
+            }}
+            sx={{
+              py: 1.5,
+              fontSize: 16,
+              cursor: "pointer",
+            }}
+          >
+            {link.label}
+          </Typography>
 
-    {/* 🚨 ADD SHOP ALL MANUALLY */}
-    <Typography
-  onClick={() => router.push("/collections")}     // still opens page on click
-  onMouseEnter={(e) => setShopAllAnchor(e.currentTarget)}
-  onMouseLeave={() => setTimeout(() => setShopAllAnchor(null), 150)}
-  sx={{
-    cursor: "pointer",
-    position: "relative",
-    fontWeight: pathname === "/collections" ? 700 : 500,
-    color: pathname === "/collections" ? "#000" : "#666",
-    "&:hover": { color: "#000" },
-  }}
->
-  Shop All
-</Typography>
+          {/* 👇 INSERT SHOP ALL AFTER HOME */}
+          {index === 0 && (
+            <Typography
+              onClick={() => {
+                router.push("/collections");
+                setMenuOpen(false);
+              }}
+              sx={{
+                py: 1.5,
+                fontSize: 16,
+                cursor: "pointer",
+                fontWeight: 900,
+              }}
+            >
+              Shop All
+            </Typography>
+          )}
+        </React.Fragment>
+      ))}
 
-
-  </Box>
-</Drawer>
+    </Box>
+  </Drawer>
 )}
+
 
       {/* CLICK-MENU BAR */} {/* DESKTOP NAV LINKS BAR */}
  <Box
