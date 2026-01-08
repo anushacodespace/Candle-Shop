@@ -1,5 +1,5 @@
 import { Suspense } from "react";
-import CollectionsPageContent from "./CollectionsPageContent";
+import CollectionsPageContent from "./CollectionsPageContent.jsx";
 
 export default function CollectionsPage() {
   return (
