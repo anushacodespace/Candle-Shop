@@ -19,7 +19,7 @@ import SearchIcon from "@mui/icons-material/Search";
 import MobileSearchOverlay from "./navbar/MobileSearchOverlay";
 
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useMediaQuery } from "@mui/material";
 
 import { useCartStore } from "@/store/cartStore";

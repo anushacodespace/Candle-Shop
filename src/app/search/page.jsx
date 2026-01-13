@@ -11,6 +11,8 @@ import {
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 
+export const dynamic = "force-dynamic";
+
 export default function SearchPage() {
   const router = useRouter();
 
