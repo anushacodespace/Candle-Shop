@@ -1,5 +1,4 @@
 "use client";
-import React from "react";
 
 import {
   AppBar,
@@ -8,291 +7,210 @@ import {
   Typography,
   IconButton,
   Badge,
-  Drawer
 } from "@mui/material";
+import Menu from "@mui/material/Menu";
+import MenuItem from "@mui/material/MenuItem";
+
 
 import MenuIcon from "@mui/icons-material/Menu";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import PersonOutlineIcon from "@mui/icons-material/PersonOutline";
 import SearchIcon from "@mui/icons-material/Search";
-import InstagramIcon from "@mui/icons-material/Instagram";
+import MobileSearchOverlay from "./navbar/MobileSearchOverlay";
 
-import BrandIcon from "@/components/BrandIcon";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
+import { useMediaQuery } from "@mui/material";
 
-import { useRouter, usePathname } from "next/navigation";
-import { useState , useEffect } from "react";
 import { useCartStore } from "@/store/cartStore";
 import { useAuthStore } from "@/store/authStore";
-import { useMediaQuery } from "@mui/material";
-import { Popover } from "@mui/material";
-import { useRef } from "react";
 
+import MobileDrawer from "./navbar/MobileDrawer";
+import DesktopDrawer from "./navbar/DesktopDrawer";
 
 export default function Navbar() {
-const [shopAllAnchor, setShopAllAnchor] = useState(null);
-const shopAllOpen = Boolean(shopAllAnchor);
-const closeDelay = useRef(null);
-const [priceBands, setPriceBands] = useState([]);
-
-
-  const isDesktop = useMediaQuery("(min-width:900px)");
-
   const router = useRouter();
-  const pathname = usePathname();
+  const isDesktop = useMediaQuery("(min-width:900px)");
 
   const cart = useCartStore((s) => s.cart);
   const user = useAuthStore((s) => s.user);
   const count = cart.reduce((s, i) => s + i.quantity, 0);
 
-  // 👇 THIS NOW LIVES INSIDE COMPONENT (correct)
   const [menuOpen, setMenuOpen] = useState(false);
-
-  const [open, setOpen] = useState(false);
-
-  const links = [
-  { label: "Home", path: "/" },
-  { label: "Sale / Offers", path: "/offers" },
-  { label: "About Us", path: "/about" },
-  { label: "Contact Us", path: "/contact" },
-];
- useEffect(() => {
-  async function load() {
-    const res = await fetch("/api/products");
-    const products = await res.json();
-
-    const prices = products.map(p => p.price).sort((a,b)=>a-b);
-    if (!prices.length) return;
-
-    const min = prices[0];
-    const max = prices[prices.length - 1];
-
-    // create up to 5 bands
-    const step = Math.ceil((max - min) / 4);
-
-    const bands = [
-      { label: `Under ₹${min + step}`, min: 0, max: min + step },
-      { label: `₹${min + step} – ₹${min + step*2}`, min: min + step, max: min + step*2 },
-      { label: `₹${min + step*2} – ₹${min + step*3}`, min: min + step*2, max: min + step*3 },
-      { label: `₹${min + step*3} – ₹${max}`, min: min + step*3, max },
-      { label: `Above ₹${max}`, min: max, max: Infinity }
-    ];
-
-    setPriceBands(bands);
-  }
-
-  load();
-}, []);
+  const [searchOpen, setSearchOpen] = useState(false);
+const [profileAnchor, setProfileAnchor] = useState(null);
+const profileOpen = Boolean(profileAnchor);
 
 
-  return (
-    <AppBar
-      position="sticky"
-      elevation={0}
-      sx={{
-        background: "#fff",
-        color: "#000",
-        borderBottom: "1px solid #eee",
-      }}
-    >
-      <Toolbar sx={{ display: "flex", justifyContent: "space-between" }}>
-        {/* MENU TOGGLE */}
-        {!isDesktop && (
-  <IconButton onClick={() => setMenuOpen((prev) => !prev)}>
-    <MenuIcon />
-  </IconButton>
-)}
-
-
-        {/* BRAND */}
-        <Box
+ return (
+  <>
+    {/* MOBILE NAVBAR */}
+    {!isDesktop && (
+      <>
+        <AppBar
+          position="sticky"
+          elevation={0}
           sx={{
-            display: "flex",
-            alignItems: "center",
-            gap: 1,
-            cursor: "pointer",
+            background: "#fff",
+            color: "#000",
+            borderBottom: "1px solid #eee",
           }}
-          onClick={() => router.push("/")}
         >
-          <BrandIcon size={26} />
-          <Typography sx={{ fontWeight: 700 }}>
-            Sparrow Light Studio
-          </Typography>
-        </Box>
+          <Toolbar sx={{ display: "flex", justifyContent: "space-between" }}>
+            {/* MENU BUTTON */}
+            <IconButton onClick={() => setMenuOpen(true)}>
+              <MenuIcon />
+            </IconButton>
 
-        {/* RIGHT ICONS */}
-        <Box sx={{ display: "flex", gap: 1 }}>
-          <IconButton>
-            <SearchIcon />
-          </IconButton>
-
-          <IconButton onClick={() => router.push(user ? "/profile" : "/login")}>
-            <PersonOutlineIcon />
-          </IconButton>
-
-          <IconButton onClick={() => router.push("/cart")}>
-            <Badge badgeContent={count} color="error">
-              <ShoppingCartIcon />
-            </Badge>
-          </IconButton>
-        </Box>
-      </Toolbar>
-{/* MOBILE DRAWER */}
-{!isDesktop && (
-  <Drawer
-    anchor="left"
-    open={menuOpen}
-    onClose={() => setMenuOpen(false)}
-  >
-    <Box sx={{ width: 260, p: 2 }}>
-
-      {links.map((link, index) => (
-        <React.Fragment key={link.path}>
-          {/* NORMAL LINK */}
-          <Typography
-            onClick={() => {
-              router.push(link.path);
-              setMenuOpen(false);
-            }}
-            sx={{
-              py: 1.5,
-              fontSize: 16,
-              cursor: "pointer",
-            }}
-          >
-            {link.label}
-          </Typography>
-
-          {/* 👇 INSERT SHOP ALL AFTER HOME */}
-          {index === 0 && (
-            <Typography
-              onClick={() => {
-                router.push("/collections");
-                setMenuOpen(false);
-              }}
-              sx={{
-                py: 1.5,
-                fontSize: 16,
-                cursor: "pointer",
-                fontWeight: 900,
-              }}
-            >
-              Shop All
-            </Typography>
-          )}
-        </React.Fragment>
-      ))}
-
-    </Box>
-  </Drawer>
-)}
-
-
-      {/* CLICK-MENU BAR */} {/* DESKTOP NAV LINKS BAR */}
- <Box
-        sx={{
-          maxHeight: isDesktop ? 120 : menuOpen ? 120 : 0,
-          opacity: isDesktop ? 1 : menuOpen ? 1 : 0,
-          overflow: "hidden",
-          transition: "all .35s ease",
-          display: isDesktop ? "flex" : menuOpen ? "flex" : "none",
-          justifyContent: "center",
-          gap: 5,
-          py: isDesktop ? 1.5 : 0,
-          borderTop: "1px solid #eee",
-          background: "rgba(255,255,255,.9)",
-          backdropFilter: "blur(6px)",
-        }}
-      >
-
-
-  {links.map((link, index) => (
-  <React.Fragment key={link.path}>
-    {/* Render HOME */}
-    {index === 0 && (
-      <Typography
-        key={link.path}
-        onClick={() => router.push(link.path)}
-        sx={{
-          cursor: "pointer",
-          position: "relative",
-          fontWeight: pathname === link.path ? 700 : 500,
-          color: pathname === link.path ? "#000" : "#666",
-          "&:hover": { color: "#000" },
-          "&::after": {
-            content: '""',
-            position: "absolute",
-            left: 0,
-            bottom: -6,
-            width: pathname === link.path ? "100%" : "0%",
-            height: "2px",
-            backgroundColor: "#7b6cf6",
-            borderRadius: 50,
-            transition: ".3s",
-          },
-          "&:hover::after": { width: "100%" },
-        }}
-      >
-        {link.label}
-      </Typography>
-    )}
-
- {/* SHOP ALL (HOVER DROPDOWN) */}
-{index === 0 && (
+            {/* BRAND */}
+            {/* BRAND */}
+<Box
+  onClick={() => router.push("/")}
+  sx={{
+    display: "flex",
+    flexDirection: "column",
+    justifyContent: "center",
+    cursor: "pointer",
+    lineHeight: 1,
+  }}
+>
   <Typography
-    onClick={() => router.push("/collections")}
-    onMouseEnter={(e) => isDesktop && setShopAllAnchor(e.currentTarget)}
-    onMouseLeave={() =>
-      isDesktop && setTimeout(() => setShopAllAnchor(null), 120)
-    }
     sx={{
-      cursor: "pointer",
-      position: "relative",
-      fontWeight: pathname === "/collections" ? 700 : 500,
-      color: pathname === "/collections" ? "#000" : "#666",
-      "&:hover": { color: "#000" },
+      fontFamily: "'Cinzel', serif",
+      fontSize: "1.6rem",     // ✅ big enough for mobile
+      fontWeight: 800,
+      color: "#6B5FA7",       // lavender
+      letterSpacing: "1px",
+      whiteSpace: "nowrap",
+      lineHeight: 1,
     }}
   >
-    Shop All
+    Sparrow
   </Typography>
-)}
 
-
-    {/* Render everything except HOME (skip duplicate) */}
-    {index > 0 && (
-      <Typography
-        key={link.path}
-        onClick={() => router.push(link.path)}
-        sx={{
-          cursor: "pointer",
-          position: "relative",
-          fontWeight: pathname === link.path ? 700 : 500,
-          color: pathname === link.path ? "#000" : "#666",
-          "&:hover": { color: "#000" },
-          "&::after": {
-            content: '""',
-            position: "absolute",
-            left: 0,
-            bottom: -6,
-            width: pathname === link.path ? "100%" : "0%",
-            height: "2px",
-            backgroundColor: "#7b6cf6",
-            borderRadius: 50,
-            transition: ".3s",
-          },
-          "&:hover::after": { width: "100%" },
-        }}
-      >
-        {link.label}
-      </Typography>
-    )}
-  
-  </React.Fragment>
-))}
-
-
-
+  <Typography
+    sx={{
+      fontSize: "0.6rem",
+      letterSpacing: "0.35em",
+      fontWeight: 700,
+      color: "#4B2E83",
+      marginTop: "2px",
+      whiteSpace: "nowrap",
+    }}
+  >
+    LIGHT STUDIO
+  </Typography>
 </Box>
 
-    </AppBar>
-  );
+
+            {/* ICONS */}
+            <Box sx={{ display: "flex", gap: 1 }}>
+             <IconButton onClick={() => setSearchOpen(true)}>
+  <SearchIcon />
+</IconButton>
+
+
+  <IconButton onClick={(e) => setProfileAnchor(e.currentTarget)}>
+  <PersonOutlineIcon />
+</IconButton>
+
+
+
+              <IconButton onClick={() => router.push("/cart")}>
+                <Badge badgeContent={count} color="error">
+                  <ShoppingCartIcon />
+                </Badge>
+              </IconButton>
+            </Box>
+            <Menu
+  anchorEl={profileAnchor}
+  open={profileOpen}
+  onClose={() => setProfileAnchor(null)}
+  anchorOrigin={{
+    vertical: "bottom",
+    horizontal: "right",
+  }}
+  transformOrigin={{
+    vertical: "top",
+    horizontal: "right",
+  }}
+  PaperProps={{
+    sx: {
+      mt: 1,
+      borderRadius: 2,
+      minWidth: 180,
+      boxShadow: "0 12px 30px rgba(0,0,0,0.18)",
+    },
+  }}
+>
+  {user ? (
+    <>
+      <MenuItem disabled sx={{ fontWeight: 600, color: "#6B5FA7" }}>
+        Hi, {user.name.split(" ")[0]} 👋
+      </MenuItem>
+
+      <MenuItem
+        onClick={() => {
+          setProfileAnchor(null);
+          router.push("/orders"); // optional
+        }}
+      >
+        My Orders
+      </MenuItem>
+
+      <MenuItem
+        onClick={() => {
+          setProfileAnchor(null);
+          useAuthStore.getState().logout();
+          router.push("/");
+        }}
+        sx={{ color: "error.main" }}
+      >
+        Logout
+      </MenuItem>
+    </>
+  ) : (
+    <>
+      <MenuItem
+        onClick={() => {
+          setProfileAnchor(null);
+          router.push("/login");
+        }}
+      >
+        Login
+      </MenuItem>
+
+      <MenuItem
+        onClick={() => {
+          setProfileAnchor(null);
+          router.push("/signup");
+        }}
+      >
+        Signup
+      </MenuItem>
+    </>
+  )}
+</Menu>
+
+          </Toolbar>
+        </AppBar>
+
+  <MobileSearchOverlay
+  open={searchOpen}
+  onClose={() => setSearchOpen(false)}
+/>
+
+        {/* MOBILE DRAWER */}
+        <MobileDrawer
+          open={menuOpen}
+          onClose={() => setMenuOpen(false)}
+        />
+      </>
+    )}
+
+    {/* DESKTOP NAVBAR */}
+    {isDesktop && <DesktopDrawer />}
+  </>
+);
+
 }

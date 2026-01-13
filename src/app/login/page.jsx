@@ -25,7 +25,7 @@ export default function LoginPage() {
   const loadCart = useCartStore((s) => s.loadCart);
   const login = useAuthStore((s) => s.login);
   const user = useAuthStore((s) => s.user);
-
+const redirect = new URLSearchParams(window.location.search).get("redirect");
   const [form, setForm] = useState({ email: "", password: "" });
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
@@ -45,10 +45,8 @@ useEffect(() => {
   return () => clearInterval(interval);
 }, []);
 
-// Redirect if already logged in
-useEffect(() => {
-  if (user) router.replace("/shop");
-}, [user, router]);
+
+
 
 const handleSubmit = (e) => {
   e.preventDefault();
@@ -69,7 +67,7 @@ const handleSubmit = (e) => {
 
   login({ email: foundUser.email, name: foundUser.name });
   loadCart(foundUser.email);
-  router.push("/shop");
+ router.push(redirect || "/shop");
 };
 
 const handleChange = (e) => {
@@ -97,9 +95,6 @@ const handleChange = (e) => {
 
     // 🔑 mobile height fix
     minHeight: { xs: "32vh", sm: "45vh", md: "100vh" },
-
-borderBottomLeftRadius: { xs: 24, md: 0 },
-borderBottomRightRadius: { xs: 24, md: 0 },
 
     backgroundImage:
       "linear-gradient(rgba(123,108,246,0.9), rgba(138,124,248,0.9)), url(/images/candle.webp)",

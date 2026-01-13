@@ -1,11 +1,30 @@
 "use client";
 
 import { useCartStore } from "@/store/cartStore";
-import { Box, Typography, Button, Divider } from "@mui/material";
+import { Box, Typography, Button, Divider, Snackbar, Alert } from "@mui/material";
+import { useRouter } from "next/navigation";
+import { useAuthStore } from "@/store/authStore";
+import { useState } from "react";
 import Link from "next/link";
+
 
 export default function ClientCart() {
   const cart = useCartStore((state) => state.cart);
+const router = useRouter();
+const user = useAuthStore((state) => state.user);
+
+const [showLoginSnack, setShowLoginSnack] = useState(false);
+
+const handleCheckout = () => {
+  if (!user?.email) {
+    setShowLoginSnack(true); 
+    return;
+  }
+
+  router.push("/checkout");
+};
+
+
 
   const subtotal = cart.reduce(
     (sum, item) => sum + item.price * item.quantity,
@@ -67,14 +86,44 @@ export default function ClientCart() {
 
       {/* ✅ PAY BUTTON */}
       <Button
-        component={Link}
-        href="/checkout"
-        variant="contained"
-        size="large"
-        fullWidth
+  variant="contained"
+  size="large"
+  fullWidth
+  onClick={handleCheckout}
+>
+  PROCEED TO CHECKOUT
+</Button>
+<Snackbar
+  open={showLoginSnack}
+  autoHideDuration={3000}
+  onClose={() => setShowLoginSnack(false)}
+  anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+>
+  <Alert
+    severity="info"
+    onClose={() => setShowLoginSnack(false)}
+    sx={{
+      fontWeight: 500,
+      borderRadius: 2,
+      boxShadow: "0 8px 24px rgba(0,0,0,0.25)",
+      alignItems: "center",
+    }}
+    action={
+      <Button
+        color="inherit"
+        size="small"
+        sx={{ fontWeight: 600 }}
+        onClick={() => router.push("/login?redirect=/checkout")}
       >
-        PROCEED TO CHECKOUT
+        LOGIN
       </Button>
+    }
+  >
+    Please login to continue
+  </Alert>
+</Snackbar>
+
     </Box>
+    
   );
 }

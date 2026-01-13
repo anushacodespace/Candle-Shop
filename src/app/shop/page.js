@@ -1,24 +1,23 @@
-import ShopClient from "@/components/ShopClient";
-import AuthGuard from "@/components/AuthGuard";
+import { headers } from "next/headers";
+import ShopClient from "@/components/collections/ShopClient";
 
-async function getProducts() {
-  const res = await fetch(
-    `${process.env.NEXTAUTH_URL}/api/products`,
-    { cache: "no-store" }
-  );
-
-  return res.json();
-}
-
+export const dynamic = "force-dynamic";
 
 export default async function ShopPage() {
-  const products = await getProducts();
+  const headersList = headers();
+  const host = headersList.get("host");
+  const protocol =
+    process.env.NODE_ENV === "development" ? "http" : "https";
 
-  return (
-    <main style={{ padding: 24 }}>
-    
-      <ShopClient products={products} />
-    
-    </main>
-  );
+  const res = await fetch(`${protocol}://${host}/api/products`, {
+    cache: "no-store",
+  });
+
+  if (!res.ok) {
+    throw new Error("Failed to fetch products");
+  }
+
+  const products = await res.json();
+
+  return <ShopClient products={products} />;
 }

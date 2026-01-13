@@ -43,13 +43,10 @@ export default function CollectionsPageContent() {
         >
           Home
         </Typography>
+        
         <Typography sx={{ color: "#aaa" }}>•</Typography>
       </Box>
-
-      <Typography variant="h4" sx={{ mb: 4, fontWeight: 700 }}>
-        Shop All
-      </Typography>
-
+      
       {/* GRID */}
       <Box
         sx={{
