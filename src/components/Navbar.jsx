@@ -24,6 +24,7 @@ import { useMediaQuery } from "@mui/material";
 
 import { useCartStore } from "@/store/cartStore";
 import { useAuthStore } from "@/store/authStore";
+import { usePathname } from "next/navigation";
 
 import MobileDrawer from "./navbar/MobileDrawer";
 import DesktopDrawer from "./navbar/DesktopDrawer";
@@ -35,11 +36,18 @@ export default function Navbar() {
   const cart = useCartStore((s) => s.cart);
   const user = useAuthStore((s) => s.user);
   const count = cart.reduce((s, i) => s + i.quantity, 0);
+const logout = useAuthStore((s) => s.logout);
 
   const [menuOpen, setMenuOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
 const [profileAnchor, setProfileAnchor] = useState(null);
 const profileOpen = Boolean(profileAnchor);
+
+const pathname = usePathname();
+
+useEffect(() => {
+  setProfileAnchor(null);
+}, [pathname]);
 
 
  return (
@@ -159,15 +167,16 @@ const profileOpen = Boolean(profileAnchor);
       </MenuItem>
 
       <MenuItem
-        onClick={() => {
-          setProfileAnchor(null);
-          useAuthStore.getState().logout();
-          router.push("/");
-        }}
-        sx={{ color: "error.main" }}
-      >
-        Logout
-      </MenuItem>
+  onClick={() => {
+    setProfileAnchor(null);
+    logout();
+    router.push("/");
+  }}
+  sx={{ color: "error.main" }}
+>
+  Logout
+</MenuItem>
+
     </>
   ) : (
     <>
