@@ -18,6 +18,8 @@ import { useState, useEffect } from "react";
 import { useCartStore } from "@/store/cartStore";
 import { useAuthStore } from "@/store/authStore";
 
+export const dynamic = "force-dynamic";
+
 export default function LoginPage() {
   const router = useRouter();
 
@@ -25,7 +27,7 @@ export default function LoginPage() {
   const loadCart = useCartStore((s) => s.loadCart);
   const login = useAuthStore((s) => s.login);
   const user = useAuthStore((s) => s.user);
-const redirect = new URLSearchParams(window.location.search).get("redirect");
+
   const [form, setForm] = useState({ email: "", password: "" });
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
@@ -34,6 +36,14 @@ const redirect = new URLSearchParams(window.location.search).get("redirect");
   const words = ["Calm", "Warm", "Sacred", "Minimal"];
   const [activeIndex, setActiveIndex] = useState(0);
 
+const [redirect, setRedirect] = useState(null);
+
+useEffect(() => {
+  if (typeof window !== "undefined") {
+    const params = new URLSearchParams(window.location.search);
+    setRedirect(params.get("redirect"));
+  }
+}, []);
 
 
 // Rotate words
