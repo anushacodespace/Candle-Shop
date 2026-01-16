@@ -2,24 +2,30 @@ import { create } from "zustand";
 
 export const useAuthStore = create((set) => ({
   user: null,
+  hydrated: false,
 
   initAuth: () => {
-    const session = localStorage.getItem("sessionUser");
-    if (session) {
-      set({ user: JSON.parse(session) });
-    }
+    if (typeof window === "undefined") return;
+
+    const saved = JSON.parse(localStorage.getItem("auth_user"));
+    set({ user: saved, hydrated: true });
   },
 
-  login: (userData) => {
-    localStorage.setItem(
-      "sessionUser",
-      JSON.stringify(userData)
-    );
-    set({ user: userData });
+  login: (user) => {
+    localStorage.setItem("auth_user", JSON.stringify(user));
+
+    // 🔑 set cookie for middleware
+    document.cookie = `auth_user=true; path=/`;
+
+    set({ user });
   },
 
   logout: () => {
-    localStorage.removeItem("sessionUser");
+    localStorage.removeItem("auth_user");
+
+    // 🔑 remove cookie
+    document.cookie = `auth_user=; path=/; max-age=0`;
+
     set({ user: null });
   },
 }));

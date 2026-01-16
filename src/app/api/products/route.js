@@ -1,49 +1,38 @@
 // src/app/api/products/route.js
 import connectDB from "../../../lib/mongodb";
+import { ObjectId } from "mongodb";
+export const dynamic = "force-dynamic";
 
-export async function GET() {
+export async function GET(req) {
   try {
-    console.log("[API] GET /api/products called");
+    const { searchParams } = new URL(req.url);
+    const id = searchParams.get("id");
+
     const { db } = await connectDB();
-    console.log("[API] connected to DB");
+
+    // 👉 Single product
+    if (id) {
+      const product = await db
+        .collection("products")
+        .findOne({ _id: new ObjectId(id) });
+
+      return new Response(JSON.stringify(product), {
+        status: 200,
+        headers: { "Content-Type": "application/json" },
+      });
+    }
+
+    // 👉 All products
     const products = await db.collection("products").find({}).toArray();
-    console.log("[API] products count:", products.length);
     return new Response(JSON.stringify(products), {
       status: 200,
-      headers: { "Content-Type": "application/json" }
+      headers: { "Content-Type": "application/json" },
     });
+
   } catch (err) {
-    console.error("[API ERR]", err);
-    return new Response(JSON.stringify({ error: String(err.message || err) }), {
+    return new Response(JSON.stringify({ error: err.message }), {
       status: 500,
-      headers: { "Content-Type": "application/json" }
+      headers: { "Content-Type": "application/json" },
     });
   }
 }
-
-// optional: allow POST to insert test product from browser/JS
-export async function POST(req) {
-  try {
-    const { db } = await connectDB();   // <-- connect first
-    let body = await req.json();
-
-    // Always work with an array
-    const products = Array.isArray(body) ? body : [body];
-
-    const r = await db.collection("products").insertMany(products);
-
-    return new Response(
-      JSON.stringify({ inserted: r.insertedCount }),
-      { status: 201, headers: { "Content-Type": "application/json" } }
-    );
-
-  } catch (err) {
-    console.error("[API POST ERR]", err);
-    return new Response(
-      JSON.stringify({ error: err.message }),
-      { status: 500, headers: { "Content-Type": "application/json" } }
-    );
-  }
-}
-
-

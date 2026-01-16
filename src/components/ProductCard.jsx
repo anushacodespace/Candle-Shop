@@ -1,69 +1,132 @@
 "use client";
 
 import Image from "next/image";
-import { Card, CardContent, Box, Typography, Button, Alert } from "@mui/material";
+import {
+  Card,
+  CardContent,
+  Box,
+  Typography,
+  Button,
+  Snackbar,
+} from "@mui/material";
+import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import { useState } from "react";
 import { useCartStore } from "@/store/cartStore";
+import { useRouter } from "next/navigation";
 
 export default function ProductCard({ product }) {
   const addToCart = useCartStore((s) => s.addToCart);
-  const [added, setAdded] = useState(false);
+  const [openSnack, setOpenSnack] = useState(false);
+  const router = useRouter();
 
-  const handleAdd = () => {
-    addToCart({ ...product, id: product._id });
-
-    setAdded(true);
-
-    // Hide message after 3 seconds
-    setTimeout(() => setAdded(false), 3000);
+  const handleAddToCart = () => {
+    addToCart(product);
+    setOpenSnack(true);
   };
 
   return (
-   <Card
-  sx={{
-    height: 340,
-    display: "flex",
-    flexDirection: "column",
-    transition: "0.2s",
-    "&:hover": { transform: "translateY(-4px)", boxShadow: 6 },
-  }}
->
+    <>
+      <Card
+        sx={{
+          height: 340,
+          display: "flex",
+          flexDirection: "column",
+          transition: "0.25s",
+          "&:hover": {
+            transform: "translateY(-4px)",
+            boxShadow: 6,
+          },
+        }}
+      >
+        {/* IMAGE */}
+        <Box
+          sx={{
+            position: "relative",
+            width: "100%",
+            height: 140,
+            overflow: "hidden",
+          }}
+        >
+          <Image
+            src={product.image || "/images/placeholder.jpg"}
+            alt={product.name}
+            fill
+            sizes="(max-width: 600px) 100vw, 25vw"
+            style={{ objectFit: "cover" }}
+          />
+        </Box>
 
-    <Box
-  sx={{
-    position: "relative",
-    width: "100%",
-    height: 140,
-    borderTopLeftRadius: 8,
-    borderTopRightRadius: 8,
-    overflow: "hidden",
-  }}
->
+        {/* CONTENT */}
+        <CardContent sx={{ py: 1.2 }}>
+          <Typography fontWeight={600}>{product.name}</Typography>
 
-        <Image
-          src={product.image || "/images/placeholder.jpg"}
-          alt={product.name}
-          fill
-          style={{ objectFit: "cover" , height: "100%", }}
-        />
-      </Box>
+          <Typography variant="body2" color="text.secondary">
+            {product.description}
+          </Typography>
 
-      <CardContent sx={{ py:1.2}}>
-        <Typography variant="h6">{product.name}</Typography>
+          <Typography sx={{ mt: 1, fontWeight: 700 }}>
+            ₹{product.price}
+          </Typography>
 
-        <Typography variant="body2" color="text.secondary">
-          {product.description}
-        </Typography>
+          <Button
+            fullWidth
+            variant="contained"
+            onClick={handleAddToCart}
+            sx={{
+              mt: 1.2,
+              backgroundColor: "#6B5FA7",
+              textTransform: "none",
+              fontWeight: 600,
+              "&:hover": {
+                backgroundColor: "#5a4d96",
+              },
+            }}
+          >
+            Add to Cart
+          </Button>
+        </CardContent>
+      </Card>
 
-        <Typography sx={{ mt: 1, fontWeight: "bold" }}>
-          ₹{product.price}
-        </Typography>
+      {/* 🔔 MYNTRA STYLE SNACKBAR */}
+      <Snackbar
+        open={openSnack}
+        autoHideDuration={3000}
+        onClose={() => setOpenSnack(false)}
+        anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+      >
+        <Box
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            gap: 1.5,
+            px: 2,
+            py: 1.2,
+            bgcolor: "#2f2f3a",
+            color: "#fff",
+            borderRadius: 2,
+            boxShadow: "0 10px 30px rgba(0,0,0,0.25)",
+            minWidth: 260,
+          }}
+        >
+          <CheckCircleIcon sx={{ color: "#4ade80" }} />
 
-        <Button fullWidth variant="contained" sx={{ mt: 2 }} onClick={handleAdd}>
-          Add to Cart
-        </Button>
+          <Typography sx={{ flex: 1, fontSize: 14 }}>
+            Added to cart
+          </Typography>
 
-      </CardContent>
-    </Card>
+          <Button
+            size="small"
+            onClick={() => router.push("/cart")}
+            sx={{
+              color: "#a78bfa",
+              fontWeight: 700,
+              textTransform: "none",
+            }}
+          >
+            VIEW CART
+          </Button>
+        </Box>
+      </Snackbar>
+    </>
   );
 }

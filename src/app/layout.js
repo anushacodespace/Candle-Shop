@@ -16,6 +16,7 @@ export default function RootLayout({ children }) {
   const initAuth = useAuthStore((s) => s.initAuth);
 
   useEffect(() => {
+    console.log("RootLayout: initAuth called");
     initAuth();
   }, [initAuth]);
   

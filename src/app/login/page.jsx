@@ -18,6 +18,8 @@ import { useState, useEffect } from "react";
 import { useCartStore } from "@/store/cartStore";
 import { useAuthStore } from "@/store/authStore";
 
+export const dynamic = "force-dynamic";
+
 export default function LoginPage() {
   const router = useRouter();
 
@@ -34,6 +36,14 @@ export default function LoginPage() {
   const words = ["Calm", "Warm", "Sacred", "Minimal"];
   const [activeIndex, setActiveIndex] = useState(0);
 
+const [redirect, setRedirect] = useState(null);
+
+useEffect(() => {
+  if (typeof window !== "undefined") {
+    const params = new URLSearchParams(window.location.search);
+    setRedirect(params.get("redirect"));
+  }
+}, []);
 
 
 // Rotate words
@@ -45,10 +55,8 @@ useEffect(() => {
   return () => clearInterval(interval);
 }, []);
 
-// Redirect if already logged in
-useEffect(() => {
-  if (user) router.replace("/shop");
-}, [user, router]);
+
+
 
 const handleSubmit = (e) => {
   e.preventDefault();
@@ -69,7 +77,7 @@ const handleSubmit = (e) => {
 
   login({ email: foundUser.email, name: foundUser.name });
   loadCart(foundUser.email);
-  router.push("/shop");
+ router.push(redirect || "/shop");
 };
 
 const handleChange = (e) => {
@@ -97,9 +105,6 @@ const handleChange = (e) => {
 
     // 🔑 mobile height fix
     minHeight: { xs: "32vh", sm: "45vh", md: "100vh" },
-
-borderBottomLeftRadius: { xs: 24, md: 0 },
-borderBottomRightRadius: { xs: 24, md: 0 },
 
     backgroundImage:
       "linear-gradient(rgba(123,108,246,0.9), rgba(138,124,248,0.9)), url(/images/candle.webp)",

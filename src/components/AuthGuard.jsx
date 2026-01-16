@@ -1,23 +1,24 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useAuthStore } from "@/store/authStore";
 import { useRouter } from "next/navigation";
+import { useEffect } from "react";
 
 export default function AuthGuard({ children }) {
+  const user = useAuthStore((s) => s.user);
+  const hydrated = useAuthStore((s) => s.hydrated);
   const router = useRouter();
-  const [checked, setChecked] = useState(false);
 
   useEffect(() => {
-    const user = localStorage.getItem("sessionUser");
+    if (!hydrated) return;
 
     if (!user) {
       router.replace("/login");
-    } else {
-      setChecked(true);
     }
-  }, [router]);
+  }, [hydrated, user, router]);
 
-  if (!checked) return null;
+  if (!hydrated) return null;
+  if (!user) return null;
 
   return children;
 }
