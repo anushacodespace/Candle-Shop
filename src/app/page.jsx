@@ -4,8 +4,8 @@ import { useState, useEffect } from "react";
 import { Box, Container } from "@mui/material";
 
 import HeroSlider from "@/components/HeroSlider";
-import ThemedProductSection from "@/components/ThemedProductSection";
-import ClientProductGrid from "@/components/ClientProductGrid";
+import ThemedProductSection from "@/components/ProductCardDetails/ThemedProductSection";
+import ClientProductGrid from "@/components/ProductCardDetails/ClientProductGrid";
 import CollectionsSection from "@/components/CollectionsSection";
 
 export default function HomePage() {
@@ -41,7 +41,7 @@ export default function HomePage() {
     right: "50%",
     marginLeft: "-50vw",
     marginRight: "-50vw",
-    overflow: "hidden",
+    overflow: "clip",
   }}
 >
   <HeroSlider onNavigate={handleNavigate} />

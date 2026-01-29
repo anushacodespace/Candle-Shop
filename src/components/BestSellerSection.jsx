@@ -1,7 +1,7 @@
 "use client";
 
 import { Typography, Grid , Box} from "@mui/material";
-import ProductCard from "./ProductCard";
+import ProductCard from "./ProductCardDetails/ProductCard";
 import { useEffect, useState } from "react";
 
 export default function BestSellerSection({ title}) {

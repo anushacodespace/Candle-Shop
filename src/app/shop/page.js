@@ -1,23 +1,12 @@
-import { headers } from "next/headers";
-import ShopClient from "@/components/collections/ShopClient";
+"use client";
 
-export const dynamic = "force-dynamic";
+import { useTheme, useMediaQuery } from "@mui/material";
+import ShopDesktop from "./ShopDesktop";
+import ShopMobile from "./ShopMobile";
 
-export default async function ShopPage() {
-  const headersList = headers();
-  const host = headersList.get("host");
-  const protocol =
-    process.env.NODE_ENV === "development" ? "http" : "https";
+export default function ShopPage() {
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down("md"));
 
-  const res = await fetch(`${protocol}://${host}/api/products`, {
-    cache: "no-store",
-  });
-
-  if (!res.ok) {
-    throw new Error("Failed to fetch products");
-  }
-
-  const products = await res.json();
-
-  return <ShopClient products={products} />;
+  return isMobile ? <ShopMobile /> : <ShopDesktop />;
 }

@@ -3,7 +3,7 @@
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { Box, Typography } from "@mui/material";
-import ClientProductGrid from "@/components/ClientProductGrid";
+import ClientProductGrid from "@/components/ProductCardDetails/ClientProductGrid";
 
 export default function ProductPage() {
   const { id } = useParams();

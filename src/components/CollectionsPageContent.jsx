@@ -3,19 +3,17 @@
 import { Box, Typography } from "@mui/material";
 import { useSearchParams } from "next/navigation";
 import { useState, useEffect } from "react";
+import {
+  List,
+  ListItemButton,
+  ListItemText,
+} from "@mui/material";
+import { useRouter } from "next/navigation";
 
 export default function CollectionsPageContent() {
+  const router = useRouter();
   const params = useSearchParams();
   const [products, setProducts] = useState([]);
-
-  useEffect(() => {
-    async function load() {
-      const res = await fetch("/api/products");
-      const data = await res.json();
-      setProducts(data);
-    }
-    load();
-  }, []);
 
   const category = params.get("category");
   const theme = params.get("theme");
@@ -33,6 +31,15 @@ export default function CollectionsPageContent() {
         p.price <= Number(max || 999999)
     );
 
+  useEffect(() => {
+    async function load() {
+      const res = await fetch("/api/products");
+      const data = await res.json();
+      setProducts(data);
+    }
+    load();
+  }, []);
+  
   return (
     <Box sx={{ p: 4 }}>
       {/* Breadcrumb */}

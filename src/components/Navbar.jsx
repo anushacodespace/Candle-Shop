@@ -17,6 +17,7 @@ import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import PersonOutlineIcon from "@mui/icons-material/PersonOutline";
 import SearchIcon from "@mui/icons-material/Search";
 import MobileSearchOverlay from "./navbar/MobileSearchOverlay";
+import WishlistIcon from "../app/wishlist/wishlistIcon";
 
 import { useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
@@ -129,6 +130,7 @@ useEffect(() => {
                   <ShoppingCartIcon />
                 </Badge>
               </IconButton>
+              <WishlistIcon />
             </Box>
             <Menu
   anchorEl={profileAnchor}
