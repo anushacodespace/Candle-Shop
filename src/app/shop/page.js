@@ -1,12 +1,10 @@
-"use client";
-
-import { useTheme, useMediaQuery } from "@mui/material";
-import ShopDesktop from "./ShopDesktop";
-import ShopMobile from "./ShopMobile";
+import { Suspense } from "react";
+import ShopClient from "./ShopClient";
 
 export default function ShopPage() {
-  const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down("md"));
-
-  return isMobile ? <ShopMobile /> : <ShopDesktop />;
+  return (
+    <Suspense fallback={null}>
+      <ShopClient />
+    </Suspense>
+  );
 }
