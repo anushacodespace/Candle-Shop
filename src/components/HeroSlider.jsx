@@ -49,7 +49,7 @@ const handleHeroClick = () => {
         margin:0,
         padding:0,
         height: 420,
-        overflow: "hidden",
+        overflowX: "hidden", overflowY: "visible",
         position: "relative",
         cursor: "pointer"
       }}

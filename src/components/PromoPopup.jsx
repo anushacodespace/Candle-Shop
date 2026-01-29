@@ -46,7 +46,10 @@ export default function PromoPopup() {
       {/* Close Button */}
       <IconButton
         size="small"
-        onClick={() => setOpen(false)}
+        onClick={() => {
+          sessionStorage.setItem("promoSeen", "true");
+          setOpen(false);
+        }}
         sx={{
           position: "absolute",
           top: 6,

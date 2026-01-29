@@ -10,7 +10,7 @@ import {
 import { useSearchParams, useRouter } from "next/navigation";
 import { useState } from "react";
 
-import ClientProductGrid from "../ClientProductGrid";
+import ClientProductGrid from "../ProductCardDetails/ClientProductGrid";
 import ShopFilters from "./ShopFilters";
 
 export default function ShopClient({ products }) {

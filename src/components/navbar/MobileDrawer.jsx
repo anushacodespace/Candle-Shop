@@ -126,7 +126,7 @@ export default function MobileDrawer({ open, onClose }) {
               {CATEGORIES.map(c => (
                 <ListItemButton
                   key={c.value}
-                  onClick={() => go(`/collections?category=${c.value}`)}
+                  onClick={() => go(`/shop?category=${c.value}`)}
                 >
                   <ListItemText primary={c.label} />
                 </ListItemButton>
@@ -147,7 +147,7 @@ export default function MobileDrawer({ open, onClose }) {
               {COLLECTIONS.map(c => (
                 <ListItemButton
                   key={c.value}
-                  onClick={() => go(`/collections?theme=${c.value}`)}
+                  onClick={() => go(`/shop?collection=${c.value}`)}
                 >
                   <ListItemText primary={c.label} />
                 </ListItemButton>
@@ -168,7 +168,7 @@ export default function MobileDrawer({ open, onClose }) {
               {PRICE_BANDS.map(p => (
                 <ListItemButton
                   key={p.label}
-                  onClick={() => go(`/collections?min=${p.min}&max=${p.max}`)}
+                  onClick={() => go(`/shop?min=${p.min}&max=${p.max}`)}
                 >
                   <ListItemText primary={p.label} />
                 </ListItemButton>

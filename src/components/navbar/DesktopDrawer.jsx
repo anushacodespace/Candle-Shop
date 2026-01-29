@@ -14,12 +14,16 @@ import {
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import PersonOutlineIcon from "@mui/icons-material/PersonOutline";
 import SearchIcon from "@mui/icons-material/Search";
+import WishlistIcon from "@/app/wishlist/wishlistIcon";
+
 
 import { useRouter, usePathname } from "next/navigation";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 
 import { useCartStore } from "@/store/cartStore";
 import { useAuthStore } from "@/store/authStore";
+import ShopAllMegaMenu from "./ShopAllMegaMenu";
+
 
 export default function DesktopDrawer() {
   const router = useRouter();
@@ -37,6 +41,8 @@ export default function DesktopDrawer() {
   const [showSuggestions, setShowSuggestions] = useState(false);
 
   const [anchorEl, setAnchorEl] = useState(null);
+  const [shopAnchor, setShopAnchor] = useState(null);
+const closeTimer = useRef(null);
 
   /* ---------------- SEARCH ---------------- */
   useEffect(() => {
@@ -66,19 +72,43 @@ export default function DesktopDrawer() {
     setAnchorEl(null);
   }, [pathname]);
 
-  const navItem = (label, path) => (
+ const navItem = (label, path) => {
+  const isActive = pathname === path;
+
+  return (
     <Typography
+      key={label}
       onClick={() => router.push(path)}
-      sx={{
-        cursor: "pointer",
-        fontWeight: pathname === path ? 600 : 400,
-        borderBottom: pathname === path ? "2px solid black" : "none",
-        pb: 0.5,
-      }}
+      sx={navItemStyle(isActive)}
     >
       {label}
     </Typography>
   );
+};
+
+
+const navItemStyle = (active) => ({
+  cursor: "pointer",
+  fontWeight: active ? 600 : 500,
+  position: "relative",
+  color: active ? "#6B5FA7" : "inherit",
+  paddingBottom: "6px",
+
+  "&::after": {
+    content: '""',
+    position: "absolute",
+    left: 0,
+    bottom: 0,
+    height: 2,
+    width: active ? "100%" : "0%",
+    backgroundColor: "#6B5FA7",
+    transition: "width 0.25s ease",
+  },
+
+  "&:hover::after": {
+    width: "100%",
+  },
+});
 
   return (
     <AppBar
@@ -274,7 +304,7 @@ export default function DesktopDrawer() {
     </Menu>
   </>
 )}
-
+<WishlistIcon /> 
 
           {/* CART */}
           <IconButton onClick={() => router.push("/cart")}>
@@ -298,8 +328,38 @@ export default function DesktopDrawer() {
         {navItem("Sale / Offers", "/offers")}
         {navItem("About Us", "/about")}
         {navItem("Contact Us", "/contact")}
-        {navItem("Shop All", "/shop")}
+     <Typography
+  onMouseEnter={(e) => {
+    if (closeTimer.current) clearTimeout(closeTimer.current);
+    setShopAnchor(e.currentTarget);
+  }}
+  onClick={(e) => setShopAnchor(e.currentTarget)}
+  onMouseLeave={() => {
+    closeTimer.current = setTimeout(() => {
+      setShopAnchor(null);
+    }, 200);
+  }}
+  sx={navItemStyle(Boolean(shopAnchor))}
+>
+  Shop All
+</Typography>
+
+
       </Toolbar>
+  <ShopAllMegaMenu
+  anchorEl={shopAnchor}
+  open={Boolean(shopAnchor)}
+  onEnter={() => {
+    if (closeTimer.current) clearTimeout(closeTimer.current);
+  }}
+  onClose={() => {
+    closeTimer.current = setTimeout(() => {
+      setShopAnchor(null);
+    }, 300);
+  }}
+/>
+
+
     </AppBar>
   );
 }
